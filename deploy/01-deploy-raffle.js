@@ -11,6 +11,7 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
     let vrfCoordinatorV2Address, subscriptionId
 
     if (developmentChains.includes(network.name)) {
+        console.log("------this is to check fixture(['all']) is working-------------")
         const vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock")
         vrfCoordinatorV2Address = vrfCoordinatorV2Mock.address
         const transactionResponse = await vrfCoordinatorV2Mock.createSubscription()
