@@ -12,6 +12,7 @@ pragma solidity ^0.8.7;
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/KeeperCompatibleInterface.sol";
+import "hardhat/console.sol";
 
 error Raffle__NotEnoughETHEntered();
 error Raffle__TransferFailed();
@@ -126,21 +127,22 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
             i_callbackGasLimit,
             NUM_WORDS
         );
+        //redundent
         emit RequestedRaffleWinner(requestId);
     }
 
     function fulfillRandomWords(
-        uint256 /* requestId*/,
+        uint256 /* requestId */,
         uint256[] memory randomWords
     ) internal override {
-        uint256 indexOfWinner = randomWords[0];
+        uint256 indexOfWinner = randomWords[0] % s_players.length;
         address payable recentWinner = s_players[indexOfWinner];
         s_recentWinner = recentWinner;
-        s_raffleState = RaffleState.OPEN;
         s_players = new address payable[](0);
+        s_raffleState = RaffleState.OPEN;
         s_lastTimeStamp = block.timestamp;
         (bool success, ) = recentWinner.call{value: address(this).balance}("");
-        //require(success)
+        // require(success, "Transfer failed");
         if (!success) {
             revert Raffle__TransferFailed();
         }
@@ -172,7 +174,7 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
         return s_players.length;
     }
 
-    function getLatestTimestamp() public view returns (uint256) {
+    function getLatestTimeStamp() public view returns (uint256) {
         return s_lastTimeStamp;
     }
 

@@ -43,4 +43,23 @@ module.exports = {
         noColors: true,
         // coinmarketcap: COINMARKETCAP_API_KEY,
     },
+    etherscan: {
+        // yarn hardhat verify --network <NETWORK> <CONTRACT_ADDRESS> <CONSTRUCTOR_PARAMETERS>
+        apiKey: {
+            goerli: ETHERSCAN_API_KEY,
+        },
+        customChains: [
+            {
+                network: "goerli",
+                chainId: 5,
+                urls: {
+                    apiURL: "https://api-goerli.etherscan.io/api",
+                    browserURL: "https://goerli.etherscan.io",
+                },
+            },
+        ],
+    },
+    mocha: {
+        timeout: 500000, // 200 seconds max
+    },
 }
